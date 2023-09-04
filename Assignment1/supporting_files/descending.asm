@@ -12,32 +12,27 @@ n:
 	8
 	.text
 main:
-	load %x0, $n, %x3
-	add %x0, %x3, %x5
-	jmp startOuter
-endOuter:
-	end
-startOuter:
-	subi %x5, 1, %x5
-	beq %x5, 0, endOuter
-	addi %x0, %x0, %x6
-	subi %x5, 0, %x8
-	jmp startInner
-endInner:
-	sub %x6, %x6, %x6
-	jmp startOuter
-startInner:
-	beq %x6, %x8, endInner
-	addi %x6, 1, %x11
-	load %x6, $a, %x9
-	load %x11, $a, %x10
-	blt %x9, %10, swap
-	addi %x6, 1, %x6
-	jmp startInner
+	load %x0, $n, %x3		;x3 = n
+	addi %x0, 0, %x4		;x4 = i
+	addi %x0, 1, %x5		;x5(j) = i
+forloop:
+	beq %x4, %x3, break
+	load %x4, $a, %x6		;x6 = a[i]  "load move data from memory to register"
+	load %x5, $a, %x7		;x7 = a[j]
+	blt %x6, %x7, swap		;swaping elements if x6 < x7
+	addi %x5, 1, %x5		;j += 1
+	beq %x5, %x3, fun		;increment function for i
+	jmp forloop				
+fun:
+	addi %x4, 1, %x4		; i += 1
+	addi %x4, 0, %x5		; j = i 
+	jmp forloop
 swap:
-	sub %x12, %x12, %x12
-	add %x12, %x9, %x12
-	store %x10, $a, %x6
-	store %x12, $a, %x11
-	addi %x6, 1, %x6
-	jmp startInner
+	addi %x7, 0, %x8		;x8(temp) = x7
+	addi %x6, 0, %x7		;x7 = x6
+	addi %x8, 0, %x6		;x6 = x8(temp)
+	store %x6, $a, %x4		;a[i] = x7	"store moves data from register to memory"
+	store %x7, $a, %x5		;a[j] = x6
+	jmp forloop
+break:
+	end

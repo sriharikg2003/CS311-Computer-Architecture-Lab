@@ -1,31 +1,23 @@
-	.data
+    .data
 n:
-	10
-	.text
+    10
+    .text
 main:
-	load %x0, $n, %x3
-	addi %x0, 65535, %x30
-	addi %x0, 65534, %x29
-	beq %x3, 0, endzero
-	addi %x0, 1, %x21
-	beq %x3, %x21, endone
-	store %x21, $n, %x29
-	addi %x21, 1, %x21
-	jmp fibo
-endzero:
-	addi %x0, 999, %x27
-	end
-endone:
-	end
-fibo:
-	beq %x3, %x21, endfibo
-	load %x30, $n, %x15
-	load %x29, $n, %x14
-	add %x15, %x14, %x17
-	subi %x29, 1, %x29
-	subi %x30, 1, %x30
-	store %x17, $n, %x29
-	subi %x3, 1, %x3
-	jmp fibo
-endfibo:
+	load %x0, $n, %x3			;x3 = n
+	addi %x0, 0, %x4			;f = 0 
+	addi %x4, 1, %x5			;f = 0 + 1
+	addi %x0, 65535, %x6		;storing 655535 in x6 i.e. x6 = 2^16 - 1
+	addi %x4, 1, %x7			;x7 = i
+	store %x4, 0, %x6			;store x4 at address 2^16 - 1
+	jmp fibonacciloop
+fibonacciloop:
+	beq %x7, %x3, break			;terminate condition i.e. n == i
+	add %x4, %x5, %x8			;x8 = x4 + x5 fibonancci formula
+	subi %x6, 1, %x6			;again given address - i(for loop)
+	store %x8, 0, %x6			;storing x4 at address 2^16 - i 
+	addi %x4, 0, %x5		    ;x5 = x4
+	addi %x8, 0, %x4			;x4 = x8
+    addi %x7, 1, %x7	       	;increamenting i
+    jmp fibonacciloop
+break:
 	end
